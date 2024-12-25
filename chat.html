@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دردشة</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            text-align: center;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+        header h1 {
+            margin: 0;
+        }
+        #content {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+        footer p {
+            margin: 0;
+        }
+
+        /* تصميم المحادثة */
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .message .sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+
+        .message .text {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            margin-bottom: 5px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .message .reply {
+            background-color: #d1e7dd;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin-top: 5px;
+            word-wrap: break-word;
+            color: #4CAF50;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .input-container input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+        }
+
+        .input-container button {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .username-container {
+            margin: 20px auto;
+            max-width: 400px;
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .username-container input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+        }
+
+        .username-container button {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ilyas 0.2 - دردشة</h1>
+    <p>تواصل مع الآخرين وشارك آرائك</p>
+</header>
+
+<main>
+    <section id="content">
+        <h2>الدردشة</h2>
+
+        <!-- طلب اسم المستخدم -->
+        <div id="usernameSection" class="username-container">
+            <h3>أدخل اسمك لتبدأ الدردشة:</h3>
+            <input type="text" id="username" placeholder="اسمك هنا...">
+            <button onclick="setUsername()">ابدأ الدردشة</button>
+        </div>
+
+        <!-- دردشة المستخدم -->
+        <div id="chatSection" class="chat-container" style="display: none;">
+            <div id="messages">
+                <!-- الرسائل ستظهر هنا -->
+            </div>
+
+            <!-- مربع الإدخال -->
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="اكتب رسالتك...">
+                <button onclick="sendMessage()">إرسال</button>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<footer>
+    <p>حقوق النشر © 2024 - ilyas 0.2</p>
+</footer>
+
+<script>
+    let messages = [];
+    let username = '';
+
+    // دالة لضبط اسم المستخدم
+    function setUsername() {
+        const usernameInput = document.getElementById("username");
+        username = usernameInput.value.trim();
+
+        if (username) {
+            document.getElementById("usernameSection").style.display = "none";
+            document.getElementById("chatSection").style.display = "block";
+        } else {
+            alert("من فضلك، أدخل اسمك!");
+        }
+    }
+
+    // دالة لإرسال الرسالة
+    function sendMessage() {
+        const messageInput = document.getElementById("messageInput");
+        const messageText = messageInput.value.trim();
+
+        if (messageText) {
+            const newMessage = {
+                sender: username || "مستخدم مجهول",
+                text: messageText,
+                replies: []
+            };
+            messages.push(newMessage);
+            messageInput.value = "";
+            displayMessages();
+        }
+    }
+
+    // دالة لعرض الرسائل
+    function displayMessages() {
+        const messagesContainer = document.getElementById("messages");
+        messagesContainer.innerHTML = "";
+
+        messages.forEach((message, index) => {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+
+            const senderDiv = document.createElement("div");
+            senderDiv.classList.add("sender");
+            senderDiv.textContent = message.sender;
+
+            const textDiv = document.createElement("div");
+            textDiv.classList.add("text");
+            textDiv.textContent = message.text;
+
+            messageDiv.appendChild(senderDiv);
+            messageDiv.appendChild(textDiv);
+
+            // إضافة خاصية الرد
+            const replyInput = document.createElement("input");
+            replyInput.type = "text";
+            replyInput.placeholder = "رد على هذه الرسالة...";
+
+            const replyButton = document.createElement("button");
+            replyButton.textContent = "رد";
+            replyButton.onclick = () => replyToMessage(index, replyInput.value);
+
+            messageDiv.appendChild(replyInput);
+            messageDiv.appendChild(replyButton);
+
+            // عرض الردود
+            message.replies.forEach(reply => {
+                const replyDiv = document.createElement("div");
+                replyDiv.classList.add("reply");
+                replyDiv.textContent = reply;
+                messageDiv.appendChild(replyDiv);
+            });
+
+            messagesContainer.appendChild(messageDiv);
+        });
+    }
+
+    // دالة لإضافة رد على الرسالة
+    function replyToMessage(messageIndex, replyText) {
+        if (replyText.trim()) {
+            messages[messageIndex].replies.push(replyText);
+            displayMessages();
+        }
+    }
+
+    // تحديث الواجهة الأولية
+    displayMessages();
+</script>
+
+</body>
+</html>
+
